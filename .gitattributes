@@ -1,0 +1,11 @@
+# Normalize line endings for text files
+* text=auto
+
+# Force LF for scripts and configuration files
+*.sh text eol=lf
+*.py text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.ini text eol=lf
+*.md text eol=lf
+*.txt text eol=lf

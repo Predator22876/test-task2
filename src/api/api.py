@@ -7,22 +7,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.database import get_db
 from src.models.models import WalletOrm
 from src.schemas.schemas import OperationType, WalletOperation
+from src.utils.utils import parse_wallet_id
 
 router = APIRouter(
     prefix="/api/v1/wallets",
     tags=["Операции с кошельком"],
 )
-
-
-def _parse_wallet_id(wallet_id: str) -> uuid.UUID:
-    try:
-        return uuid.UUID(wallet_id)
-    except ValueError:
-        raise HTTPException(
-            status_code=404,
-            detail="Кошелек не найден",
-        )
-
 
 @router.post("")
 async def create_wallet(
@@ -52,7 +42,7 @@ async def perform_operation(
     ),
     db: AsyncSession = Depends(get_db),
 ):
-    wallet_uuid = _parse_wallet_id(wallet_id)
+    wallet_uuid = parse_wallet_id(wallet_id)
 
     stmt = (
         select(WalletOrm)
@@ -94,7 +84,7 @@ async def get_wallet_balance(
     wallet_id: str,
     db: AsyncSession = Depends(get_db),
 ):
-    wallet_uuid = _parse_wallet_id(wallet_id)
+    wallet_uuid = parse_wallet_id(wallet_id)
 
     stmt = select(WalletOrm).where(
         WalletOrm.id == wallet_uuid
